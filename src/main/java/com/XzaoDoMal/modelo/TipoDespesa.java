@@ -1,0 +1,12 @@
+package com.XzaoDoMal.modelo;
+
+public enum TipoDespesa {
+
+	ALIMENTACAO,
+	MANUTENCAO,
+	COMBUSTIVEL,
+	SEGURO,
+	IPVA_LICENCIAMENTO,
+	ALUGUEL_VEICULO,
+	OUTROS
+}

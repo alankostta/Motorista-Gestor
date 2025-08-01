@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cadastro de Motoristas</title>
+	<!-- Bootstrap 5 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+
+<body class="motorista">
+	<div class="container container-custom-motorista">
+		<div class="card card-custom-motorista">
+			<div class="card-header bg-primary text-white">
+				<h4 class="mb-0">Lista de Despesa</h4>
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+					<a th:href="@{/inicio-controle}" class="btn btn-secondary"><i class="bi bi-house"></i>
+							Inicio</a>
+						<a th:href="@{/despesas/listar-despesas}" class="btn btn-dark">
+							<i class="bi bi-arrow-repeat"></i> Recarregar</a>
+						<a th:href="@{/despesas/cadastro-despesas}" class="btn btn-success">
+							<i class="bi bi-arrow-left-square"></i> Voltar</a>
+				</div>
+			</div>
+			<div class="card-body">
+				<!-- Lista de Motoristas -->
+				<h5>Despesas Cadastradas</h5>
+				<table class="table table-striped mt-3">
+					<thead>
+						<tr>
+							<th>Código
+								<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='id', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='id', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Motorista
+									<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='motorista.nome', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='motorista.nome', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Tipo Desp.
+									<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='tipo', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='tipo', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Descrição
+									<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='descricao', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='descricao', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Valor
+									<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='valorDespesa', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='valorDespesa', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Data
+									<a class="sublinhado"
+									th:href="@{/despesas/listar-despesas(sort='data', direction='asc')}"><i
+										class="bi bi-arrow-up-short"></i>
+									<a class="sublinhado"
+										th:href="@{/despesas/listar-despesas(sort='data', direction='desc')}">
+										<i class="bi bi-arrow-down-short"></i>
+									</a>
+								</a>
+							</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody id="listaMotoristas">
+						<th:block th:if="${despesas.isEmpty()}">
+							<p style="color: red" class="font-italic input-uppercase">Não há despesas cadastradas!</p>
+						</th:block>
+						<tr th:each="despesa :${despesas}">
+							<td th:text="${despesa.id}"></td>
+							<td th:text="${despesa.motorista.nome}"></td>
+							<td th:text="${despesa.tipo}"></td>
+							<td th:text="${despesa.descricao}"></td>
+							<td th:text="${despesa.valorDespesa}"></td>
+							<td th:text="${#dates.format(despesa.data, 'dd/MM/yyyy')}"></td>
+							<td colspan="2">
+								<a th:href="@{/despesas/editarDespesa/{id}(id=${despesa.id})}"><i id="editar"
+										class="bi bi-pencil-square"></i></a>
+								<a th:href="@{/despesas/excluirDespesa/{id}(id=${despesa.id})}"><i id="remover"
+										class="bi bi-trash3-fill"></i></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br>
+				<div class="row">
+					<div class="col">
+						Exibindo página <span th:text="${currentPage + 1}"></span> de <span
+							th:text="${totalPages}"></span>
+					</div>
+					<nav aria-label="Page navigation example">
+						<ul class="pagination justify-content-center">
+							<li th:classappend="${currentPage == 0} ? 'disabled'">
+								<a class="page-link"
+									th:href="@{/despesas/listar-despesas(page=${currentPage - 1})}">Anterior</a>
+							</li>
+							<li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+								th:classappend="${i == currentPage} ? 'active'">
+								<a class="page-link" th:href="@{/despesas/listar-despesas(page=${i})}"
+									th:text="${i + 1}"></a>
+							</li>
+							<li th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+								<a class="page-link"
+									th:href="@{/despesas/listar-despesas(page=${currentPage + 1})}">Próximo</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap 5 JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

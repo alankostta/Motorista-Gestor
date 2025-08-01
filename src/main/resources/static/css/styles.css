@@ -1,0 +1,71 @@
+body {
+	background-color: #f8f9fa;
+}
+.log{
+	height: 100vh;
+	background: linear-gradient(to right, rgb(51, 153, 255) 50%, rgb(159, 224, 255) 70%, rgb(128, 255, 255) 90%);
+}
+.hero-section {
+	background: linear-gradient(135deg, #007bff 0%, #6c757d 100%);
+	color: #fff;
+	padding: 60px 0;
+}
+
+.hero-title {
+	font-size: 2.5rem;
+	font-weight: bold;
+}
+
+.hero-subtitle {
+	font-size: 1.2rem;
+	margin-top: 10px;
+	margin-bottom: 30px;
+}
+
+.card-custom {
+	border: none;
+	border-radius: 10px;
+	transition: transform 0.3s;
+}
+
+.card-custom:hover {
+	transform: scale(1.05);
+}
+
+.motorista {
+	background: linear-gradient(to right, rgb(51, 153, 255) 50%, rgb(159, 224, 255) 70%, rgb(128, 255, 255) 90%);
+}
+
+.container-custom-motorista {
+	margin-top: 30px;
+}
+
+.card-custom-motorista {
+	border: none;
+	border-radius: 10px;
+}
+
+.input-uppercase {
+	text-transform: uppercase;
+}
+
+.sublinhado {
+	text-decoration: none;
+	color: red;
+}
+#sub {
+	text-decoration: none;
+}
+
+.horas {
+	background: linear-gradient(to right, rgb(51, 153, 255) 50%, rgb(159, 224, 255) 70%, rgb(128, 255, 255) 90%);
+}
+
+.container-horas {
+	margin-top: 30px;
+}
+
+.card-horas {
+	border: none;
+	border-radius: 10px;
+}

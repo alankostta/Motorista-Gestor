@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+    <title>DriveManager</title>
+</head>
+<body>
+<div class="content">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2" th:text="${expenseDto.id != null ? 'Editar Registro' : 'Novo Registro'}">Nova Despesa</h1>
+            <p class="text-muted">Registre as despesas do dia</p>
+        </div>
+        <a th:href="@{/expenses}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <!-- Formulário -->
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/expenses}" th:object="${expenseDto}" method="post">
+                <input type="hidden" th:field="*{id}">
+                
+                <!-- Primeira linha -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="date" class="form-label">Data *</label>
+                        <input type="date" th:field="*{date}" id="date" class="form-control" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                    </div>
+                       <div class="col">
+                        <label for="carId" class="form-label">Carro *</label>
+                        <select th:field="*{carId}" id="carId" class="form-select" required>
+                            <option value="">Selecione um carro</option>
+                            <option th:each="car : ${cars}" th:value="${car.id}" 
+                                    th:text="${car.brand} + ' ' + ${car.model} + ' - ' + ${car.licensePlate}"></option>
+                        </select>
+                        <div class="text-danger" th:if="${#fields.hasErrors('carId')}" th:errors="*{carId}"></div>
+                    </div>
+                    <div class="col">
+                        <label for="appPlatform" class="form-label">Plataforma *</label>
+                        <select th:field="*{expenseCategory}" id="appPlatform" class="form-select" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option th:each="categoria : ${categorias}" th:value="${categoria}" th:text="${categoria.displayName}"></option>
+                        </select>
+                        <div class="text-danger" th:if="${#fields.hasErrors('expenseCategory')}" th:errors="*{expenseCategory}"></div>
+                    </div>
+                </div>
+
+                <!-- Custos -->
+                <div class="mb-4">
+                    <h5 class="mb-3">Custos</h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="fuelCost" class="form-label">Combustível (R$)</label>
+                            <input type="number" step="0.01" th:field="*{fuelCost}" id="fuelCost" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="foodCost" class="form-label">Alimentação (R$)</label>
+                            <input type="number" step="0.01" th:field="*{foodCost}" id="foodCost" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="maintenanceCost" class="form-label">Manutenção (R$)</label>
+                            <input type="number" step="0.01" th:field="*{maintenanceCost}" id="maintenanceCost" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="otherCosts" class="form-label">Outros Custos (R$)</label>
+                            <input type="number" step="0.01" th:field="*{otherCosts}" id="otherCosts" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="otherCostsDescription" class="form-label">Descrição dos Outros Custos</label>
+                            <input type="text" th:field="*{otherCostsDescription}" id="otherCostsDescription" 
+                                   class="form-control" placeholder="Ex: pedágio, estacionamento...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex justify-content-end">
+                    <a th:href="@{/expenses}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

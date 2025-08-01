@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cadastro de Motoristas</title>
+	<!-- Bootstrap 5 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body class="motorista">
+	<div class="container container-custom-motorista">
+		<div class="card card-custom-motorista">
+			<div class="card-header bg-primary text-white">
+				<h4 class="mb-0">Cadastro de Despesa</h4>
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+					<a th:href="@{/inicio-controle}" class="btn btn-secondary"><i class="bi bi-house"></i> Inicio</a>
+					<a th:href="@{/despesas/cadastro-despesas}" class="btn btn-dark"><i class="bi bi-arrow-repeat"></i>
+						Recarregar</a>
+					<a th:href="@{/despesas/listar-despesas}" class="btn btn-warning"><i
+							class="bi bi-card-checklist"></i></i> Listar</a>
+				</div>
+			</div>
+			<div class="card-body">
+				<!-- Formulário de Cadastro -->
+				<form id="formDespesa" th:object="${despesa}" th:action="@{/despesas/salvarDespesa}" method="post">
+					<input type="hidden" th:field="*{id}">
+					<div class="row">
+						<div class="col">
+							<label for="nome" class="form-label">Motorista</label>
+							<select class="form-select" aria-label="Default select example" th:field="*{motorista}">
+								<option value="">Selecione</option>
+								<option th:each="motorista :${motoristas}" th:value="${motorista.id}"
+									th:text="${motorista.nome}"></option>
+							</select>
+						</div>
+						<div class="col">
+							<label for="nome" class="form-label">Descrição da Despesa</label>
+							<input type="text" class="form-control input-uppercase" id="nome" th:field="*{descricao}"
+								placeholder="Informe o gasto">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="nome" class="form-label">Tipo da Despesa</label>
+							<select class="form-select" aria-label="Default select example" th:field="*{tipo}">
+								<option value="">Selecione</option>
+								<option th:each="tipo :${tiposDespesa}" th:value="${tipo}" th:text="${tipo}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="carro" class="form-label">Valor da Despesa</label>
+							<input type="number" class="form-control input-uppercase" id="carro"
+								th:field="*{valorDespesa}">
+						</div>
+						<div class="col">
+							<label class="form-label">Data da Despesa</label>
+							<input type="date" class="form-control input-uppercase" id="carro" th:field="*{data}">
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col">
+							<button type="submit" name="acao" value="qtdDespesa" class="btn btn-success"><i
+									class="bi bi-plus-circle"></i>
+								Add</button>
+
+						</div>
+					</div>
+
+					<hr>
+					<!-- Lista de Motoristas -->
+					<h5>Despesas Cadastradas</h5>
+					<table class="table table-striped mt-3">
+						<thead>
+							<tr>
+								<th>Código</th>
+								<th>Motorista</th>
+								<th>Tipo Desp.</th>
+								<th>Descrição</th>
+								<th>Valor</th>
+								<th>Data</th>
+								<th>Ações</th>
+							</tr>
+						</thead>
+						<tbody id="listaMotoristas">
+							<th:block th:if="${despesas.isEmpty()}">
+								<p style="color: red" class="font-italic input-uppercase">Não há despesas cadastradas!
+								</p>
+							</th:block>
+							<tr th:each="despesa :${despesas}">
+								<td th:text="${despesa.id}"></td>
+								<td th:text="${despesa.motorista.nome}"></td>
+								<td th:text="${despesa.tipo}"></td>
+								<td th:text="${despesa.descricao}"></td>
+								<td th:text="${despesa.valorDespesa}"></td>
+								<td th:text="${#dates.format(despesa.data, 'dd/MM/yyyy')}"></td>
+								<td colspan="2">
+									<a th:href="@{/despesas/editarDespesa/{id}(id=${despesa.id})}"><i id="editar"
+											class="bi bi-pencil-square"></i></a>
+									<a th:href="@{/despesas/excluirDespesa/{id}(id=${despesa.id})}"><i id="remover"
+											class="bi bi-trash3-fill"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button type="submit" name="acao" value="salvar" class="btn btn-success"><i
+							class="bi bi-floppy2-fill"></i>
+						Salvar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap 5 JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
