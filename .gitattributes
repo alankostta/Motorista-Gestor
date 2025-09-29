@@ -1,8 +1,2 @@
-# Arquivos de texto terão final de linha convertido para LF ao commitar
-* text=auto
-
-# Ou force final de linha LF para todos os arquivos
-*.java text eol=lf
-*.html text eol=lf
-*.properties text eol=lf
-
+/mvnw text eol=lf
+*.cmd text eol=crlf
