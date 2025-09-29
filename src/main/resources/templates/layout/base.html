@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout (content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager</title>
+    <link rel="icon" href="images/carro.png" type="image/svg+xml">
+    <!-- Fonte Inter para tipografia moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/custom.css(v=13)}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script th:src="@{/js/main.js(v=13)}"></script>
+	<script>
+	// Função global para preview de foto de perfil
+	function previewProfilePhoto(input) {
+	    if (input.files && input.files[0]) {
+	        const file = input.files[0];
+	        
+	        // Verificar se é uma imagem
+	        if (!file.type.match('image.*')) {
+	            alert('Por favor, selecione apenas arquivos de imagem.');
+	            input.value = '';
+	            return;
+	        }
+	        
+	        const reader = new FileReader();
+	        reader.onload = function(e) {
+	            const preview = document.getElementById('profilePhotoPreview');
+	            if (preview) {
+	                preview.src = e.target.result;
+	            }
+	        };
+	        reader.readAsDataURL(file);
+	    }
+	}
+	</script>
+</head>
+<body class="layout-fixed">
+    <!-- Sidebar Moderno -->
+    <nav id="sidebar" class="sidebar-fixed d-flex flex-column flex-shrink-0 text-white">
+         
+        <!-- Logo/Brand -->
+        <div class="navbar-brand">
+            <a th:href="@{/dashboard}" class="d-flex align-items-center text-white text-decoration-none">
+                <i class="fas fa-car fa-2x me-2"></i>
+                <span class="sidebar-label">DriveManager</span>
+            </a>
+        </div>
+        <button class="toggle-sidebar-btn pulse-on-hover" onclick="toggleSidebar()" title="Expandir/Recolher menu" aria-label="Toggle sidebar">
+            <i class="fas fa-bars"></i>
+            <span class="sidebar-label">Menu</span>
+        </button>
+        
+        <!-- Navigation -->
+        <div class="sidebar-content">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item slide-in">
+                    <a th:href="@{/dashboard}" class="nav-link"
+                       th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+                       role="menuitem" aria-label="Dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="sidebar-label">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item slide-in">
+                    <a th:href="@{/cars}" class="nav-link"
+                       th:classappend="${activePage == 'cars'} ? 'active' : ''"
+                       role="menuitem" aria-label="Carros">
+                        <i class="fas fa-car-side"></i>
+                        <span class="sidebar-label">Carros</span>
+                    </a>
+                </li>
+                <li class="nav-item slide-in">
+                    <a th:href="@{/records}" class="nav-link"
+                       th:classappend="${activePage == 'records'} ? 'active' : ''"
+                       role="menuitem" aria-label="Registros">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="sidebar-label">Registros</span>
+                    </a>
+                </li>
+                <li class="nav-item slide-in">
+                    <a th:href="@{/expenses}" class="nav-link"
+                       th:classappend="${activePage == 'expenses'} ? 'active' : ''"
+                       role="menuitem" aria-label="Despesas">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span class="sidebar-label">Despesas</span>
+                    </a>
+                </li>
+                <li class="nav-item slide-in">
+                    <a th:href="@{/analytics}" class="nav-link"
+                       th:classappend="${activePage == 'analytics'} ? 'active' : ''"
+                       role="menuitem" aria-label="Analíticos">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="sidebar-label">Analíticos</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- User Menu -->
+            <div class="dropdown mt-auto">
+                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center"
+                   data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário">
+                    <img th:src="${currentUser?.profilePhoto != null ? '/uploads/profile-photos/' + currentUser.profilePhoto : '/images/default-avatar.svg'}"
+                         alt="Foto do Perfil" 
+                         class="rounded-circle me-2"
+                         style="width: 32px; height: 32px; object-fit: cover;"/>
+                    <span class="sidebar-label ms-2" th:text="${currentUser?.fullName} ?: 'Usuário'">Usuário</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark shadow-lg">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/userEdite}">
+                            <i class="fas fa-cog me-2"></i>Configurações
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt me-2"></i>Sair
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Overlay para mobile -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+    
+    <!-- Conteúdo principal com scroll -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <th:block th:replace="${content}">
+                <!-- O conteúdo específico da página será inserido aqui -->
+            </th:block>
+        </div>
+    </main>
+</body>
+</html>

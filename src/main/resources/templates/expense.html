@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+<title>DriveManager</title>
+</head>
+<body>
+	<div class="content">
+		<!-- Header com melhor espaçamento -->
+		<div class="d-flex justify-content-between align-items-center mb-5">
+			<div>
+				<h1 class="h2 mb-2">
+					<i class="fas fa-receipt text-danger me-3"></i>Minhas Despesas
+				</h1>
+				<p class="text-muted mb-0">Gerencie e acompanhe suas despesas díarias</p>
+			</div>
+			<a th:href="@{/expenses/expenses-new}" class="btn btn-success btn-lg shadow-sm"> 
+				<i class="fas fa-plus me-2"></i>Nova Despesa
+			</a>
+		</div>
+
+		<!-- Mensagens de Feedback com melhor visual -->
+		<div th:if="${successMessage}"
+			class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+			<i class="fas fa-check-circle me-2"></i>
+			<span th:text="${successMessage}"></span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"
+				aria-label="Close"></button>
+		</div>
+
+		<!-- Card principal com sombra e melhor espaçamento -->
+		<div class="card shadow-sm border-0">
+			<div class="card-header bg-white border-bottom">
+				<div class="d-flex align-items-center">
+					<i class="fas fa-list text-primary me-2"></i>
+					<h5 class="card-title mb-0">Lista de Despesas</h5>
+				</div>
+			</div>
+			<div class="card-body p-0">
+				<!-- Estado vazio melhorado -->
+				<div th:if="${#lists.isEmpty(expenses)}"
+					class="text-center text-muted py-5 px-4">
+					<div class="mb-4">
+						<i class="fas fa-receipt fa-4x text-muted opacity-50"></i>
+					</div>
+					<h4 class="mb-3">Nenhuma despesa encontrada</h4>
+					<p class="mb-4">Comece registrando sua primeira despesa para acompanhar seus gastos.</p>
+					<a th:href="@{/expenses/expense-new}" class="btn btn-primary btn-lg">
+						<i class="fas fa-plus me-2"></i>Criar Primeira Despesa
+					</a>
+				</div>
+				
+				<!-- Tabela com melhor design -->
+				<div th:unless="${#lists.isEmpty(expenses)}" class="table-responsive">
+					<table class="table table-hover mb-0">
+						<thead class="table-dark">
+							<tr>
+								<th class="border-0">
+									<i class="fas fa-calendar-alt me-2"></i>Data
+								</th>
+								<th class="border-0">
+									<i class="fas fa-tags me-2"></i>Categoria
+								</th>
+								<th class="border-0">
+									<i class="fas fa-dollar-sign me-2"></i>Valor
+								</th>
+								<th class="border-0">
+									<i class="fas fa-comment me-2"></i>Descrição
+								</th>
+								<th class="border-0 text-center">
+									<i class="fas fa-cogs me-2"></i>Ações
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="expense : ${expenses}" class="align-middle">
+								<td class="fw-medium">
+									<i class="fas fa-calendar text-muted me-2"></i>
+									<span th:text="${#temporals.format(expense.date, 'dd/MM/yyyy')}"></span>
+								</td>
+								<td>
+									<span class="badge bg-secondary" th:text="${expense.expenseCategory}"></span>
+								</td>
+								<td class="text-danger fw-bold">
+									<i class="fas fa-minus-circle me-1"></i>
+									<span th:text="${#numbers.formatCurrency(expense.valueExpense)}"></span>
+								</td>
+								<td class="text-muted" th:text="${expense.descriptionExpense ?: 'Sem descrição'}"></td>
+								<td>
+									<div class="d-flex justify-content-center align-items-center gap-2">
+										<a th:href="@{/expenses/edit/{id}(id=${expense.id})}"
+											class="btn btn-sm btn-outline-primary" title="Editar despesa">
+											<i class="fas fa-edit"></i>
+										</a>
+										<form th:action="@{/expenses/delete/{id}(id=${expense.id})}"
+											method="post" class="m-0"
+											onsubmit="return confirm('Tem certeza que deseja excluir esta despesa?')"
+											style="display: inline;">
+											<button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir despesa">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<!-- Paginação Moderna -->
+				<div th:unless="${#lists.isEmpty(expenses)}" class="card-footer bg-white border-top">
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="pagination-info">
+							<span class="text-muted">
+								<i class="fas fa-info-circle me-2"></i>
+								Exibindo página <strong th:text="${currentPage + 1}"></strong> de <strong th:text="${totalPages}"></strong>
+								<span class="d-none d-md-inline"> • Total de registros: <strong th:text="${totalElements ?: 0}"></strong></span>
+							</span>
+						</div>
+						<nav aria-label="Navegação de páginas">
+							<ul class="pagination pagination-modern mb-0">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link" th:href="@{/expenses(page=${currentPage - 1})}" aria-label="Página anterior">
+										<i class="fas fa-chevron-left"></i>
+										<span class="d-none d-sm-inline ms-1">Anterior</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${i == currentPage} ? 'active'">
+									<a class="page-link" th:href="@{/expenses(page=${i})}" th:text="${i + 1}"></a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link" th:href="@{/expenses(page=${currentPage + 1})}" aria-label="Próxima página">
+										<span class="d-none d-sm-inline me-1">Próximo</span>
+										<i class="fas fa-chevron-right"></i>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

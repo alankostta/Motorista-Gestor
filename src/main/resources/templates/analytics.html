@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+    <title>Análise de Desempenho</title>
+</head>
+<body class="analytc">
+<div class="content">
+    
+        <header class="head">
+            <h1 class="display-6 fw-bold">Análise de Desempenho</h1>
+            <p class="lead text-muted">Métricas detalhadas sobre seu mês de trabalho.</p>
+        </header>
+
+        <section class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-primary h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="ganhoHora" class="kpi-value">R$ 0.00</div>
+                        <div class="kpi-label text-white">Ganho/Hora</div>
+                        <div class="kpi-icon-wrapper time-icon">
+                            <i class="bi bi-clock"></i> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-success h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="ganhoKm" class="kpi-value">R$ 0.00</div>
+                        <div class="kpi-label text-white">Ganho/KM</div>
+                        <div class="kpi-icon-wrapper money-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-danger h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="custoKm" class="kpi-value">R$ 0.00</div>
+                        <div class="kpi-label">Custo/KM</div>
+                        <div class="kpi-icon-wrapper cost-icon">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-warning h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="custoDia" class="kpi-value">R$ 0.00</div>
+                        <div class="kpi-label">Custo Médio/Dia</div>
+                        <div class="kpi-icon-wrapper daily-cost-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Segunda linha de KPIs -->
+        <section class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-info h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="diaDoMes" class="kpi-value text-white">--</div>
+                        <div class="kpi-label text-white">Dia do Mês</div>
+                        <div class="kpi-icon-wrapper day-icon">
+                            <i class="bi bi-calendar-day"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-secondary h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="diasRestantes" class="kpi-value text-white">--</div>
+                        <div class="kpi-label text-white">Dias Restantes</div>
+                        <div class="kpi-icon-wrapper remaining-days-icon">
+                            <i class="bi bi-calendar-x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="diaSemana" class="kpi-value text-white">--</div>
+                        <div class="kpi-label text-white">Dia da Semana</div>
+                        <div class="kpi-icon-wrapper weekday-icon">
+                            <i class="bi bi-calendar-week"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-gradient-primary h-100 kpi-card">
+                    <div class="card-body d-flex flex-column justify-content-between position-relative">
+                        <div id="mesAnoAtual" class="kpi-value text-white">--</div>
+                        <div class="kpi-label text-white">Mês/Ano</div>
+                        <div class="kpi-icon-wrapper month-year-icon">
+                            <i class="bi bi-calendar-month"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Card de Quilometragem - ÚNICO CARD DE KM NO ANALYTICS -->
+        <section class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card bg-gradient-primary h-100" id="uniqueKmCard">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <i class="bi bi-speedometer2 text-white" style="font-size: 2rem;"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title text-white mb-0">Quilometragem do Mês</h5>
+                                <p class="text-white-50 mb-0" id="mesAno">Carregando...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-white bg-opacity-10 rounded">
+                                    <div class="h3 text-white mb-1" id="kmMes">0 KM</div>
+                                    <div class="small text-white-75">Total do Mês</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-white bg-opacity-10 rounded">
+                                    <div class="h3 text-white mb-1" id="kmDia">0 KM</div>
+                                    <div class="small text-white-75">Média Diária</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 bg-white bg-opacity-10 rounded">
+                                    <div class="h3 text-white mb-1" id="diasComRegistro">0</div>
+                                    <div class="small text-white-75">Dias Trabalhados</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gráfico de Quilometragem Diária -->
+        <section class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card h-100 chart-card">
+                    <div class="card-body">
+                        <h2 class="card-title h4 mb-3 text-center">Quilometragem Diária</h2>
+                        <canvas id="kmWeeklyChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="row g-3">
+            <div class="col-lg-6">
+                <div class="card h-100 chart-card">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h2 class="card-title h4 mb-3">Divisão de Custos</h2>
+                        <canvas id="costDivisionChart" class="w-100"></canvas>
+                        <div class="chart-labels mt-3 d-flex justify-content-around w-100">
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 chart-card">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h2 class="card-title h4 mb-3">Ganhos por Plataforma</h2>
+                        <canvas id="platformEarningsChart" class="w-100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br>
+         <section class="row">
+            <div class="col">
+                <div class="card h-100 chart-card">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h2 class="card-title h4 mb-3">Despesas por Categoria</h2>
+                        <canvas id="expenseCategoryChart" class="w-100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div> 
+    
+    <script>
+    // Script de debug para verificar elementos duplicados
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DEBUG ANALYTICS PAGE ===');
+        
+        // Verificar elementos de KM
+        const kmMesElements = document.querySelectorAll('#kmMes');
+        const kmDiaElements = document.querySelectorAll('#kmDia');
+        const diasComRegistroElements = document.querySelectorAll('#diasComRegistro');
+        const uniqueKmCard = document.getElementById('uniqueKmCard');
+        
+        console.log('Elementos kmMes encontrados:', kmMesElements.length);
+        console.log('Elementos kmDia encontrados:', kmDiaElements.length);
+        console.log('Elementos diasComRegistro encontrados:', diasComRegistroElements.length);
+        console.log('Card único de KM encontrado:', !!uniqueKmCard);
+        
+        if (kmMesElements.length > 1) {
+            console.error('PROBLEMA: Múltiplos elementos kmMes encontrados!');
+            kmMesElements.forEach((el, index) => {
+                console.log(`kmMes ${index}:`, el);
+            });
+        }
+        
+        if (kmDiaElements.length > 1) {
+            console.error('PROBLEMA: Múltiplos elementos kmDia encontrados!');
+            kmDiaElements.forEach((el, index) => {
+                console.log(`kmDia ${index}:`, el);
+            });
+        }
+        
+        if (diasComRegistroElements.length > 1) {
+            console.error('PROBLEMA: Múltiplos elementos diasComRegistro encontrados!');
+            diasComRegistroElements.forEach((el, index) => {
+                console.log(`diasComRegistro ${index}:`, el);
+            });
+        }
+        
+        console.log('=== FIM DEBUG ANALYTICS PAGE ===');
+        
+        // Função para popular os cards de data
+        function popularCardsData() {
+            const agora = new Date();
+            const diaAtual = agora.getDate();
+            const mesAtual = agora.getMonth();
+            const anoAtual = agora.getFullYear();
+            
+            // Calcular dias restantes no mês
+            const ultimoDiaDoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+            const diasRestantes = ultimoDiaDoMes - diaAtual;
+            
+            // Nomes dos dias da semana em português
+            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const diaSemanaAtual = diasSemana[agora.getDay()];
+            
+            // Nomes dos meses em português
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const mesAnoFormatado = `${meses[mesAtual]} ${anoAtual}`;
+            
+            // Popular os elementos
+            const diaDoMesEl = document.getElementById('diaDoMes');
+            const diasRestantesEl = document.getElementById('diasRestantes');
+            const diaSemanaEl = document.getElementById('diaSemana');
+            const mesAnoAtualEl = document.getElementById('mesAnoAtual');
+            
+            if (diaDoMesEl) diaDoMesEl.textContent = diaAtual;
+            if (diasRestantesEl) diasRestantesEl.textContent = diasRestantes;
+            if (diaSemanaEl) diaSemanaEl.textContent = diaSemanaAtual;
+            if (mesAnoAtualEl) mesAnoAtualEl.textContent = mesAnoFormatado;
+            
+            console.log('Cards de data populados:', {
+                diaAtual,
+                diasRestantes,
+                diaSemanaAtual,
+                mesAnoFormatado
+            });
+        }
+        
+        // Chamar a função para popular os cards
+        popularCardsData();
+    });
+    </script>
+</body>
+</html>

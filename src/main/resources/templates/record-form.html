@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+    <title>Registro - DriveManager</title>
+</head>
+<body>
+<div class="content">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5 fade-in">
+        <div class="slide-in">
+            <h1 class="display-5 fw-bold text-primary mb-2" th:text="${recordDto.id != null ? 'Editar Registro' : 'Novo Registro'}">
+                <i class="fas fa-clipboard-list me-3"></i>Novo Registro
+            </h1>
+            <p class="lead text-muted mb-0">
+                <span th:if="${recordDto.id != null}">
+                    <i class="fas fa-edit me-2"></i>Atualize as informações do seu registro de trabalho
+                </span>
+                <span th:unless="${recordDto.id != null}">
+                    <i class="fas fa-plus me-2"></i>Registre os dados do seu dia de trabalho
+                </span>
+            </p>
+        </div>
+        <a th:href="@{/records}" class="btn btn-outline-secondary btn-lg shadow-soft pulse-on-hover">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <!-- Formulário -->
+    <div class="card modern-form-card shadow-soft border-0 fade-in">
+        <div class="card-header bg-gradient-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-clipboard-check me-2"></i>
+                <span th:text="${recordDto.id != null ? 'Dados do Registro' : 'Novo Registro de Trabalho'}">Novo Registro de Trabalho</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <!-- Mensagem de erro geral -->
+            <div th:if="${error}" class="alert modern-alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Erro ao processar o formulário</span>
+            </div>
+            
+            <form th:action="@{/records}" th:object="${recordDto}" method="post" class="needs-validation" novalidate>
+                <input type="hidden" th:field="*{id}">
+                
+                <!-- Primeira linha -->
+                <div class="row mb-4 g-3">
+                    <div class="col-lg-4 col-md-6">
+                        <label for="date" class="form-label fw-semibold">
+                            <i class="fas fa-calendar me-2"></i>Data *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
+                            <input type="date" th:field="*{date}" id="date" class="modern-input border-start-0" required>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <label for="startTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-2"></i>Horário de Início
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-play"></i>
+                            </span>
+                            <input type="time" th:field="*{startTime}" id="startTime" class="modern-input border-start-0">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <label for="endTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-2"></i>Horário de Fim
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-stop"></i>
+                            </span>
+                            <input type="time" th:field="*{endTime}" id="endTime" class="modern-input border-start-0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda linha -->
+                <div class="row mb-4 g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <label for="hoursWorked" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-2"></i>Horas Trabalhadas *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-hourglass-half"></i>
+                            </span>
+                            <input type="number" step="0.1" th:field="*{hoursWorked}" id="hoursWorked" onclick="calcularHoras()" class="modern-input border-start-0" required>
+                            <span class="input-group-text bg-light">h</span>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('hoursWorked')}" th:errors="*{hoursWorked}"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label for="kmDriven" class="form-label fw-semibold">
+                            <i class="fas fa-route me-2"></i>Km Rodados *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-road"></i>
+                            </span>
+                            <input type="number" step="0.1" th:field="*{kmDriven}" id="kmDriven" class="modern-input border-start-0" required>
+                            <span class="input-group-text bg-light">km</span>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('kmDriven')}" th:errors="*{kmDriven}"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label for="carId" class="form-label fw-semibold">
+                            <i class="fas fa-car me-2"></i>Carro *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-car-side"></i>
+                            </span>
+                            <select th:field="*{carId}" id="carId" class="form-select border-start-0" required>
+                                <option value="">Selecione um carro</option>
+                                <option th:each="car : ${cars}" th:value="${car.id}" 
+                                        th:text="${car.brand} + ' ' + ${car.model} + ' - ' + ${car.licensePlate}"></option>
+                            </select>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('carId')}" th:errors="*{carId}"></div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label for="appPlatform" class="form-label fw-semibold">
+                            <i class="fas fa-mobile-alt me-2"></i>Plataforma *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-apps"></i>
+                            </span>
+                            <select th:field="*{appPlatform}" id="appPlatform" class="form-select border-start-0" required>
+                                <option value="">Selecione uma plataforma</option>
+                                <option th:each="platform : ${platforms}" th:value="${platform}" th:text="${platform.displayName}"></option>
+                            </select>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('appPlatform')}" th:errors="*{appPlatform}"></div>
+                    </div>
+                </div>
+
+                <!-- Ganhos -->
+                <div class="mb-5">
+                    <h5 class="mb-4 text-success">
+                        <i class="fas fa-dollar-sign me-2"></i>Ganhos
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-lg-4 col-md-6">
+                            <label for="grossEarnings" class="form-label fw-semibold">
+                                <i class="fas fa-money-bill-wave me-2"></i>Ganhos Brutos (R$) *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-dollar-sign text-success"></i>
+                                </span>
+                                <input type="number" step="0.01" th:field="*{grossEarnings}" id="grossEarnings" class="modern-input border-start-0" required>
+                                <span class="input-group-text bg-light">R$</span>
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('grossEarnings')}" th:errors="*{grossEarnings}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Despesas Associadas -->
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="text-warning">
+                            <i class="fas fa-receipt me-2"></i>Despesas Associadas
+                        </h5>
+                        <a th:if="${recordDto.id != null}" th:href="@{/expenses/expenses-new(dailyRecordId=${recordDto.id})}" class="btn btn-warning shadow-soft">
+                            <i class="fas fa-plus me-2"></i>Adicionar Despesa
+                        </a>
+                    </div>
+                    
+                    <div th:if="${expenses != null and !expenses.empty}" class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Categoria</th>
+                                    <th>Descrição</th>
+                                    <th>Valor (R$)</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="expense : ${expenses}">
+                                    <td th:text="${#temporals.format(expense.date, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${expense.expenseCategory.displayName}"></td>
+                                    <td th:text="${expense.descriptionExpense}"></td>
+                                    <td th:text="${#numbers.formatDecimal(expense.valueExpense, 1, 2)}"></td>
+                                    <td>
+                                        <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" class="btn btn-sm btn-warning me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form th:action="@{/expenses/delete/{id}(id=${expense.id})}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta despesa?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th th:text="${#numbers.formatDecimal(expenses.stream().map(e -> e.valueExpense).reduce(T(java.math.BigDecimal).ZERO, T(java.math.BigDecimal).sum), 1, 2)}"></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div th:if="${expenses == null or expenses.empty}" class="alert alert-info">
+                        <span th:if="${recordDto.id == null}">Salve o registro primeiro para adicionar despesas.</span>
+                        <span th:if="${recordDto.id != null}">Nenhuma despesa associada a este registro.</span>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="mb-4">
+                    <label for="notes" class="form-label">Observações</label>
+                    <textarea th:field="*{notes}" id="notes" class="form-control" rows="3" 
+                              placeholder="Observações sobre o dia de trabalho..."></textarea>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex justify-content-end gap-3 pt-4 border-top">
+                    <a th:href="@{/records}" class="btn btn-outline-secondary btn-lg px-4 shadow-soft">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg px-4 shadow-soft">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${recordDto.id != null ? 'Atualizar' : 'Salvar'}">Salvar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Calcular horas automaticamente quando os horários são preenchidos
+document.getElementById('startTime').addEventListener('change', calculateHours);
+document.getElementById('endTime').addEventListener('change', calculateHours);
+
+function calculateHours() {
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    
+    if (startTime && endTime) {
+        const start = new Date('2000-01-01T' + startTime);
+        const end = new Date('2000-01-01T' + endTime);
+        
+        if (end > start) {
+            const diffMs = end.getTime() - start.getTime();
+            const hours = diffMs / (1000 * 60 * 60);
+            document.getElementById('hoursWorked').value = hours.toFixed(1);
+        }
+    }
+}
+</script>
+</body>
+</html>

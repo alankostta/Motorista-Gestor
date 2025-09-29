@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+<title>Registros - DriveManager</title>
+</head>
+<body>
+	<div class="content fade-in">
+		<!-- Header Moderno -->
+		<div class="d-flex justify-content-between align-items-center mb-5">
+			<div class="slide-in">
+				<h1 class="display-5 fw-bold mb-2">
+					<i class="fas fa-clipboard-list text-primary me-3"></i>
+					Meus Registros
+				</h1>
+				<p class="text-muted lead">Gerencie seus registros diários de trabalho e acompanhe seu desempenho</p>
+			</div>
+			<a th:href="@{/records/new}" class="btn btn-success btn-lg shadow-soft pulse-on-hover"> 
+				<i class="fas fa-plus me-2"></i>Novo Registro
+			</a>
+		</div>
+
+		<!-- Cards de Estatísticas -->
+		<div class="row g-4 mb-5">
+			<div class="col-lg-6 col-md-6">
+				<div class="card stats-card bg-gradient-secondary text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Total de Registros</p>
+								<h3 class="fw-bold mb-0" th:text="${analytics?.totalRecords ?: 0}">0</h3>
+								<small class="opacity-75">
+									<i class="fas fa-list me-1"></i>Viagens realizadas
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-list fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6 col-md-6">
+				<div class="card stats-card bg-gradient-dark text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Carros Cadastrados</p>
+								<h3 class="fw-bold mb-0" th:text="${totalCars ?: 0}">0</h3>
+								<small class="opacity-75">
+									<i class="fas fa-car me-1"></i>Veículos ativos
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-car fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Mensagens de Feedback Modernas -->
+		<div th:if="${successMessage}"
+			class="alert alert-success alert-dismissible fade show modern-alert" role="alert">
+			<div class="d-flex align-items-center">
+				<i class="fas fa-check-circle fa-lg me-3"></i>
+				<div>
+					<strong>Sucesso!</strong>
+					<span th:text="${successMessage}"></span>
+				</div>
+			</div>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+
+		<!-- Tabela de Registros Moderna -->
+		<div class="card modern-table-card fade-in">
+			<div class="card-header bg-transparent border-0 pb-0">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5 class="card-title fw-bold mb-0">
+						<i class="fas fa-table text-primary me-2"></i>
+						Histórico de Registros
+					</h5>
+					<div class="d-flex gap-2">
+						<button class="btn btn-sm btn-outline-secondary">
+							<i class="fas fa-filter me-1"></i>Filtrar
+						</button>
+						<button class="btn btn-sm btn-outline-secondary">
+							<i class="fas fa-download me-1"></i>Exportar
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<!-- Estado Vazio Moderno -->
+				<div th:if="${#lists.isEmpty(records)}" class="empty-state text-center py-5">
+					<div class="empty-state-icon mb-4">
+						<i class="fas fa-clipboard-list fa-4x text-muted"></i>
+					</div>
+					<h4 class="fw-bold text-dark mb-3">Nenhum registro encontrado</h4>
+					<p class="text-muted mb-4 lead">Comece criando seu primeiro registro de trabalho para acompanhar seus ganhos e desempenho.</p>
+					<a th:href="@{/records/new}" class="btn btn-primary btn-lg shadow-soft">
+						<i class="fas fa-plus me-2"></i>Criar Primeiro Registro
+					</a>
+				</div>
+				
+				<!-- Tabela Moderna -->
+				<div th:unless="${#lists.isEmpty(records)}" class="table-responsive">
+					<table class="table table-hover modern-table">
+						<thead>
+							<tr>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-calendar me-2 text-primary"></i>Data
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-mobile-alt me-2 text-primary"></i>Plataforma
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-car me-2 text-primary"></i>Carro
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-clock me-2 text-primary"></i>Horas
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-route me-2 text-primary"></i>Km
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-arrow-up me-2 text-success"></i>Ganhos
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-arrow-down me-2 text-danger"></i>Custos
+								</th>
+								<th class="fw-bold text-dark border-0">
+									<i class="fas fa-chart-line me-2 text-info"></i>Lucro
+								</th>
+								<th class="fw-bold text-dark border-0 text-center">
+									<i class="fas fa-cog me-2 text-primary"></i>Ações
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="record : ${records}" class="table-row-hover">
+								<td class="fw-semibold">
+									<div class="d-flex align-items-center">
+										<i class="fas fa-calendar-day text-muted me-2"></i>
+										<span th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></span>
+									</div>
+								</td>
+								<td>
+									<!-- Badges modernas para plataformas -->
+									<th:block th:switch="${record.appPlatform.toString()}">
+										<span th:case="'UBER'" class="badge modern-badge bg-dark">
+											<i class="fab fa-uber me-1"></i>
+											<span th:text="${record.appPlatform.displayName}">UBER</span>
+										</span>
+										<span th:case="'NOVENTA_NOVE'" class="badge modern-badge bg-warning text-dark">
+											<i class="fas fa-taxi me-1"></i>
+											<span th:text="${record.appPlatform.displayName}">99</span>
+										</span>
+										<span th:case="'INDRIVER'" class="badge modern-badge bg-success">
+											<i class="fas fa-car me-1"></i>
+											<span th:text="${record.appPlatform.displayName}">INDRIVER</span>
+										</span>
+										<span th:case="*" class="badge modern-badge bg-secondary">
+											<i class="fas fa-question me-1"></i>
+											<span th:text="${record.appPlatform.displayName != null ? record.appPlatform.displayName : 'N/A'}">N/A</span>
+										</span>
+									</th:block>
+								</td>
+								<td>
+									<div class="d-flex align-items-center">
+										<i class="fas fa-car text-muted me-2"></i>
+										<div>
+											<div class="fw-semibold" th:text="${record.car.brand}"></div>
+											<small class="text-muted" th:text="${record.car.model}"></small>
+										</div>
+									</div>
+								</td>
+								<td>
+									<span class="badge bg-light text-dark">
+										<i class="fas fa-clock me-1"></i>
+										<span th:text="${record.hoursWorked} + 'h'"></span>
+									</span>
+								</td>
+								<td>
+									<span class="badge bg-light text-dark">
+										<i class="fas fa-route me-1"></i>
+										<span th:text="${record.kmDriven} + ' km'"></span>
+									</span>
+								</td>
+								<td>
+									<div class="d-flex align-items-center">
+										<i class="fas fa-arrow-up text-success me-2"></i>
+										<span class="fw-bold text-success" th:text="'R$ ' + ${record.grossEarnings}"></span>
+									</div>
+								</td>
+								<td>
+									<div class="d-flex align-items-center">
+										<i class="fas fa-arrow-down text-danger me-2"></i>
+										<span class="fw-bold text-danger" th:text="'R$ ' + ${record.totalCosts}"></span>
+									</div>
+								</td>
+								<td>
+									<div class="d-flex align-items-center">
+										<i class="fas fa-chart-line me-2" 
+										   th:classappend="${record.netProfit >= 0 ? 'text-success' : 'text-danger'}"></i>
+										<span class="fw-bold"
+											  th:classappend="${record.netProfit >= 0 ? 'text-success' : 'text-danger'}"
+											  th:text="'R$ ' + ${record.netProfit}"></span>
+									</div>
+								</td>
+								<td>
+									<div class="d-flex justify-content-center gap-2">
+										<a th:href="@{/records/edit/{id}(id=${record.id})}"
+										   class="btn btn-sm btn-outline-primary action-btn" 
+										   title="Editar registro">
+											<i class="fas fa-edit"></i>
+										</a>
+										<form th:action="@{/records/delete/{id}(id=${record.id})}"
+											  method="post" class="d-inline"
+											  onsubmit="return confirm('Tem certeza que deseja excluir este registro?')">
+											<button type="submit" 
+													class="btn btn-sm btn-outline-danger action-btn" 
+													title="Excluir registro">
+												<i class="fas fa-trash"></i>
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- Paginação Moderna -->
+					<div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+						<div class="pagination-info">
+							<span class="text-muted">
+								<i class="fas fa-info-circle me-2"></i>
+								Exibindo página <strong th:text="${currentPage + 1}"></strong> de <strong th:text="${totalPages}"></strong>
+								<span class="d-none d-md-inline"> • Total de registros: <strong th:text="${totalElements ?: 0}"></strong></span>
+							</span>
+						</div>
+						<nav aria-label="Navegação de páginas">
+							<ul class="pagination pagination-modern mb-0">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link" th:href="@{/records(page=${currentPage - 1})}" aria-label="Página anterior">
+										<i class="fas fa-chevron-left"></i>
+										<span class="d-none d-sm-inline ms-1">Anterior</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${i == currentPage} ? 'active'">
+									<a class="page-link" th:href="@{/records(page=${i})}" th:text="${i + 1}"></a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link" th:href="@{/records(page=${currentPage + 1})}" aria-label="Próxima página">
+										<span class="d-none d-sm-inline me-1">Próximo</span>
+										<i class="fas fa-chevron-right"></i>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

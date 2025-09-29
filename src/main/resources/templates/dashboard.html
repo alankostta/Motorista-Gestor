@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+<title>Dashboard - DriveManager</title>
+</head>
+<body>
+	<div class="content fade-in">
+		<!-- Header Moderno -->
+		<div class="d-flex justify-content-between align-items-center mb-5">
+			<div class="slide-in">
+				<h1 class="display-5 fw-bold mb-2">
+					Dashboard
+					<i class="fas fa-chart-line text-primary ms-2"></i>
+				</h1>
+				<p class="text-muted lead">
+					Bem-vindo de volta, <span class="fw-semibold text-dark"
+						th:text="${currentUser?.fullName} ?: 'Usuário'">Usuário</span>!
+				</p>
+			</div>
+			<a th:href="@{/records/new}" class="btn btn-success btn-lg shadow-soft pulse-on-hover"> 
+				<i class="fas fa-plus me-2"></i>Novo Registro
+			</a>
+		</div>
+
+		<!-- Grupo 1: Ganhos Totais, Lucro Líquido, Total de Horas -->
+		<div class="row g-4 mb-5">
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-primary text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Ganhos Totais</p>
+								<h3 class="fw-bold mb-0"
+									th:text="${#numbers.formatCurrency(analytics?.totalEarnings ?: 0)}">R$ 0,00</h3>
+								<small class="opacity-75">
+									<i class="fas fa-arrow-up me-1"></i>Este mês
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-dollar-sign fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-success text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Lucro Líquido</p>
+								<h3 class="fw-bold mb-0"
+									th:text="${#numbers.formatCurrency(analytics?.netProfit ?: 0)}">R$ 0,00</h3>
+								<small class="opacity-75">
+									<i class="fas fa-chart-line me-1"></i>Margem atual
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-trophy fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-info text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Total de Horas</p>
+								<h3 class="fw-bold mb-0"
+									th:text="${analytics?.totalHours != null} ? ${analytics.totalHours + 'h'} : '0h'">0h</h3>
+								<small class="opacity-75">
+									<i class="fas fa-clock me-1"></i>Trabalhadas
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-clock fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grupo 2: Despesas, Média Diária, Quilometragem -->
+		<div class="row g-4 mb-5">
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-danger text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Despesas</p>
+								<h3 class="fw-bold mb-0" th:text="${#numbers.formatCurrency(analytics?.totalCosts ?: 0)}">R$ 0,00</h3>
+								<small class="opacity-75">
+									<i class="fas fa-arrow-down me-1"></i>Este mês
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-credit-card fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-purple text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Média Diária</p>
+								<h3 class="fw-bold mb-0" th:text="${#numbers.formatCurrency(analytics?.dailyAverage ?: 0)}">R$ 0,00</h3>
+								<small class="opacity-75">
+									<i class="fas fa-calendar-day me-1"></i>Ganho médio
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-calendar-day fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6">
+				<div class="card stats-card bg-gradient-warning text-white h-100 fade-in">
+					<div class="card-body position-relative">
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<p class="card-text opacity-90 mb-1">Quilometragem</p>
+								<h3 class="fw-bold mb-0" th:text="${analytics?.totalKm ?: 0} + ' km'">0 km</h3>
+								<small class="opacity-75">
+									<i class="fas fa-route me-1"></i>Total percorrido
+								</small>
+							</div>
+							<div class="bg-white bg-opacity-20 rounded-circle p-3">
+								<i class="fas fa-road fa-lg"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Gráficos Modernos -->
+		<div class="row g-4">
+			<div class="col-lg-6">
+				<div class="card chart-card h-100 fade-in">
+					<div class="card-header bg-transparent border-0 pb-0">
+						<div class="d-flex justify-content-between align-items-center">
+							<h5 class="card-title fw-bold mb-0">
+								<i class="fas fa-chart-pie text-primary me-2"></i>
+								Ganhos vs Despesas
+							</h5>
+							<div class="dropdown">
+								<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+									<i class="fas fa-ellipsis-v"></i>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Exportar</a></li>
+									<li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>Compartilhar</a></li>
+								</ul>
+							</div>
+						</div>
+						<p class="text-muted small mb-0">Comparativo mensal de receitas e gastos</p>
+					</div>
+					<div class="card-body">
+						<div class="chart-container">
+							<canvas id="earningsExpensesChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card chart-card h-100 fade-in">
+					<div class="card-header bg-transparent border-0 pb-0">
+						<div class="d-flex justify-content-between align-items-center">
+							<h5 class="card-title fw-bold mb-0">
+								<i class="fas fa-chart-line text-success me-2"></i>
+								Ganhos por Dia
+							</h5>
+							<div class="dropdown">
+								<button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+									<i class="fas fa-ellipsis-v"></i>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Exportar</a></li>
+									<li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>Compartilhar</a></li>
+								</ul>
+							</div>
+						</div>
+						<p class="text-muted small mb-0">Evolução diária dos ganhos</p>
+					</div>
+					<div class="card-body">
+						<div class="chart-container">
+							<canvas id="dailyEarningsChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Seção de Ações Rápidas -->
+		<div class="row g-4 mt-4">
+			<div class="col-12">
+				<div class="card quick-actions-card fade-in">
+					<div class="card-body">
+						<h5 class="card-title fw-bold mb-4">
+							<i class="fas fa-bolt text-warning me-2"></i>
+							Ações Rápidas
+						</h5>
+						<div class="row g-3">
+							<div class="col-lg-3 col-md-6">
+								<a th:href="@{/records/new}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 quick-action-btn">
+									<i class="fas fa-plus fa-2x mb-2"></i>
+									<span class="fw-semibold">Novo Registro</span>
+									<small class="text-muted">Adicionar viagem</small>
+								</a>
+							</div>
+							<div class="col-lg-3 col-md-6">
+								<a th:href="@{/expenses/new}" class="btn btn-outline-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 quick-action-btn">
+									<i class="fas fa-receipt fa-2x mb-2"></i>
+									<span class="fw-semibold">Nova Despesa</span>
+									<small class="text-muted">Registrar gasto</small>
+								</a>
+							</div>
+							<div class="col-lg-3 col-md-6">
+								<a th:href="@{/analytics}" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 quick-action-btn">
+									<i class="fas fa-chart-bar fa-2x mb-2"></i>
+									<span class="fw-semibold">Relatórios</span>
+									<small class="text-muted">Ver análises</small>
+								</a>
+							</div>
+							<div class="col-lg-3 col-md-6">
+								<a th:href="@{/cars}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 quick-action-btn">
+									<i class="fas fa-car fa-2x mb-2"></i>
+									<span class="fw-semibold">Meus Carros</span>
+									<small class="text-muted">Gerenciar veículos</small>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Registros Recentes -->
+		<div class="row mt-4 mb-4">
+			<div class="col-lg-8 mb-4">
+				<div class="card h-100">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h5 class="card-title mb-0">Registros Recentes</h5>
+						<a th:href="@{/records}" class="btn btn-outline-primary btn-sm">Ver
+							Todos</a>
+					</div>
+					<div class="card-body">
+						<div th:if="${#lists.isEmpty(recentRecords)}"
+							class="text-center text-muted py-4">
+							<i class="fas fa-calendar-alt fa-3x mb-3"></i>
+							<p>Nenhum registro encontrado.</p>
+							<a th:href="@{/records/new}" class="btn btn-primary">Criar
+								Primeiro Registro</a>
+						</div>
+						<div th:unless="${#lists.isEmpty(recentRecords)}"
+							class="table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Data</th>
+										<th>Plataforma</th>
+										<th>Horas</th>
+										<th>Ganhos</th>
+										<th>Lucro</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="record : ${recentRecords}">
+										<td th:text="${#temporals.format(record?.date, 'dd/MM/yyyy')}">--</td>
+										<td>
+											<!-- Bloco responsável por exibir a badge com a cor correta -->
+											<th:block th:switch="${record.appPlatform.toString()}">
+
+												<!-- Caso seja UBER -->
+												<span th:case="'UBER'" class="badge bg-dark text-white"
+													th:text="${record.appPlatform.displayName}"> UBER </span>
+
+												<!-- Caso seja 99 -->
+												<span th:case="'NOVENTA_NOVE'"
+													class="badge bg-warning text-dark"
+													th:text="${record.appPlatform.displayName}"> 99 </span>
+
+												<!-- Caso seja INDRIVER -->
+												<span th:case="'INDRIVER'"
+													class="badge bg-success text-white"
+													th:text="${record.appPlatform.displayName}">
+													INDRIVER </span>
+
+												<!-- Qualquer outro valor (fallback) -->
+												<span th:case="*" class="badge bg-light text-white"
+													th:text="${record.appPlatform.displayName != null ? record.appPlatform.displayName : 'N/A'}">
+													N/A </span>
+											</th:block>
+										</td>
+										<td
+											th:text="${record?.hoursWorked != null} ? ${record.hoursWorked + 'h'} : '0h'">0h</td>
+										<td class="text-success fw-bold"
+											th:text="${#numbers.formatCurrency(record?.grossEarnings ?: 0)}">R$
+											0,00</td>
+										<td class="fw-bold"
+											th:classappend="${record?.netProfit >= 0} ? 'text-success' : 'text-danger'"
+											th:text="${#numbers.formatCurrency(record?.netProfit ?: 0)}">R$
+											0,00</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 mb-4">
+				<div class="graf">
+					<div class="cartao card h-100">
+						<div class="cartaoH card-header">
+							<h5 class="ch">Ganhos vs Custos (Mês Atual)</h5>
+						</div>
+						<div class="cartaoC card-content">
+							<canvas id="monthlyChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Resumo Geral -->
+		<div class="row mt-4">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title mb-0">Resumo Geral</h5>
+					</div>
+					<div class="card-body">
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item d-flex justify-content-between">
+								<span>Total de Registros:</span> <strong
+								th:text="${analytics?.totalRecords ?: 0}">0</strong>
+							</li>
+							<li class="list-group-item d-flex justify-content-between">
+								<span>Total de Carros:</span> <strong
+								th:text="${totalCars ?: 0}">0</strong>
+							</li>
+							<li class="list-group-item d-flex justify-content-between">
+								<span>Km Total:</span> <strong
+								th:text="${analytics?.totalKm ?: 0} + ' km'">0 km</strong>
+							</li>
+							<li class="list-group-item d-flex justify-content-between">
+								<span>Custo Total:</span> <strong class="text-danger"
+								th:text="${#numbers.formatCurrency(analytics?.totalCosts ?: 0)}">R$
+									0,00</strong>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

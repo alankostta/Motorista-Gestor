@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{:: .content})}">
+<head>
+    <title>DriveManager</title>
+</head>
+<body>
+<div class="content">
+    <!-- Header melhorado -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="h2 mb-2">
+                <i class="fas fa-receipt text-danger me-3"></i>
+                <span th:text="${expenseDto.id != null ? 'Editar Despesa' : 'Nova Despesa'}">Nova Despesa</span>
+            </h1>
+            <p class="text-muted mb-1">Registre e gerencie suas despesas díarias</p>
+            <div class="alert alert-info border-0 py-2 px-3 mb-0" style="background-color: #e3f2fd;">
+                <i class="fas fa-info-circle me-2"></i>
+                <small>As despesas devem corresponder à data do registro de trabalho equivalente</small>
+            </div>
+        </div>
+        <a th:href="@{/expenses}" class="btn btn-secondary btn-lg shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <!-- Formulário com melhor design -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-edit text-primary me-2"></i>
+                <h5 class="card-title mb-0">Informações da Despesa</h5>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <form th:action="@{/expenses}" th:object="${expenseDto}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{dailyRecordId}">
+                
+                <!-- Informações básicas -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label for="date" class="form-label fw-medium">
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>Data da Despesa *
+                        </label>
+                        <input type="date" th:field="*{date}" id="date" 
+                               class="form-control form-control-lg" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="expenseCategory" class="form-label fw-medium">
+                            <i class="fas fa-tags text-primary me-2"></i>Categoria *
+                        </label>
+                        <select th:field="*{expenseCategory}" id="expenseCategory" 
+                                class="form-select form-select-lg" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option th:each="categoria : ${categorias}" 
+                                    th:value="${categoria}" 
+                                    th:text="${categoria.displayName}"></option>
+                        </select>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('expenseCategory')}" th:errors="*{expenseCategory}"></div>
+                    </div>
+                </div>
+
+                <!-- Detalhes da despesa -->
+                <div class="mb-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-dollar-sign text-success me-2"></i>Detalhes da Despesa
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="descriptionExpense" class="form-label fw-medium">
+                                <i class="fas fa-comment text-muted me-2"></i>Descrição
+                            </label>
+                            <input type="text" th:field="*{descriptionExpense}" id="descriptionExpense"
+                                   class="form-control form-control-lg" 
+                                   placeholder="Descreva brevemente a despesa (opcional)">
+                            <div class="form-text">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ex: Combustível posto Shell, Almoço restaurante, etc.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="valueExpense" class="form-label fw-medium">
+                                <i class="fas fa-money-bill-wave text-success me-2"></i>Valor (R$) *
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light">R$</span>
+                                <input type="number" step="0.01" th:field="*{valueExpense}" 
+                                       id="valueExpense" class="form-control" 
+                                       placeholder="0,00" required>
+                            </div>
+                            <div class="text-danger mt-1" th:if="${#fields.hasErrors('valueExpense')}" th:errors="*{valueExpense}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                    <a th:href="@{/expenses}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${expenseDto.id != null ? 'Atualizar Despesa' : 'Salvar Despesa'}">Salvar Despesa</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
