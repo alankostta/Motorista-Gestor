@@ -237,10 +237,10 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📞 Contato
 
-**Desenvolvedor**: Seu Nome
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- Email: seu.email@exemplo.com
-- LinkedIn: [Seu Perfil](https://linkedin.com/in/seu-perfil)
+**Desenvolvedor**: Alan Soares da Costa
+- GitHub:https://github.com/alankostta
+- Email: alan.kostta14@gmail.com, alanwinnux@hotmail.com
+- LinkedIn: linkedin.com/in/alan-soares-da-costa-89a662232
 
 ## 🙏 Agradecimentos
 
