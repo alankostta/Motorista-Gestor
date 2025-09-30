@@ -1,4 +1,113 @@
 // JavaScript principal do DriveManager
+console.log('🚀 MAIN.JS CARREGADO SUCCESSFULLY!');
+console.log('📍 URL atual:', window.location.pathname);
+
+// EXECUTAR SEMPRE - removendo condição de pathname
+console.log('🚀 EXECUTANDO FUNÇÃO DOS CARDS DE DATA...');
+
+// Função simplificada para testar
+function testarCards() {
+    console.log('🔧 Testando cards...');
+    
+    // Listar todos os elementos com ID na página
+    console.log('📋 LISTANDO TODOS OS ELEMENTOS COM ID:');
+    const todosElementosComId = document.querySelectorAll('[id]');
+    todosElementosComId.forEach(elem => {
+        console.log(`   - ID: "${elem.id}" | Tag: ${elem.tagName} | Conteúdo: "${elem.textContent.trim()}"`);
+    });
+    console.log('📋 TOTAL DE ELEMENTOS COM ID:', todosElementosComId.length);
+    
+    const hoje = new Date();
+    const diaDoMes = hoje.getDate();
+    const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+    const diasRestantes = diasNoMes - diaDoMes;
+    const diaSemana = hoje.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const mesAno = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    
+    console.log('📊 Dados calculados:', { diaDoMes, diasRestantes, diaSemana, mesAno });
+    
+    // Tentar encontrar e atualizar elementos
+    const elementos = {
+        diaDoMes: document.getElementById('diaDoMes'),
+        diasRestantes: document.getElementById('diasRestantes'),
+        diaSemana: document.getElementById('diaSemana'),
+        mesAnoAtual: document.getElementById('mesAnoAtual')
+    };
+    
+    console.log('🔍 Elementos encontrados:', elementos);
+    
+    // Verificar cada elemento detalhadamente
+    console.log('=== VERIFICAÇÃO DETALHADA DOS ELEMENTOS ===');
+    
+    // Elemento diaDoMes
+    const elemDiaDoMes = document.getElementById('diaDoMes');
+    console.log('🔍 getElementById("diaDoMes"):', elemDiaDoMes);
+    if (elemDiaDoMes) {
+        console.log('   - Elemento encontrado!');
+        console.log('   - Valor atual:', elemDiaDoMes.textContent);
+        console.log('   - innerHTML atual:', elemDiaDoMes.innerHTML);
+        elemDiaDoMes.textContent = diaDoMes;
+        console.log('   - Novo valor definido:', diaDoMes);
+        console.log('   - Valor após atualização:', elemDiaDoMes.textContent);
+    } else {
+        console.log('   - ❌ Elemento diaDoMes NÃO encontrado');
+    }
+    
+    // Elemento diasRestantes
+    const elemDiasRestantes = document.getElementById('diasRestantes');
+    console.log('🔍 getElementById("diasRestantes"):', elemDiasRestantes);
+    if (elemDiasRestantes) {
+        console.log('   - Elemento encontrado!');
+        console.log('   - Valor atual:', elemDiasRestantes.textContent);
+        console.log('   - innerHTML atual:', elemDiasRestantes.innerHTML);
+        elemDiasRestantes.textContent = diasRestantes;
+        console.log('   - Novo valor definido:', diasRestantes);
+        console.log('   - Valor após atualização:', elemDiasRestantes.textContent);
+    } else {
+        console.log('   - ❌ Elemento diasRestantes NÃO encontrado');
+    }
+    
+    // Elemento diaSemana
+    const elemDiaSemana = document.getElementById('diaSemana');
+    console.log('🔍 getElementById("diaSemana"):', elemDiaSemana);
+    if (elemDiaSemana) {
+        console.log('   - Elemento encontrado!');
+        console.log('   - Valor atual:', elemDiaSemana.textContent);
+        console.log('   - innerHTML atual:', elemDiaSemana.innerHTML);
+        elemDiaSemana.textContent = diaSemana;
+        console.log('   - Novo valor definido:', diaSemana);
+        console.log('   - Valor após atualização:', elemDiaSemana.textContent);
+    } else {
+        console.log('   - ❌ Elemento diaSemana NÃO encontrado');
+    }
+    
+    // Elemento mesAnoAtual
+    const elemMesAnoAtual = document.getElementById('mesAnoAtual');
+    console.log('🔍 getElementById("mesAnoAtual"):', elemMesAnoAtual);
+    if (elemMesAnoAtual) {
+        console.log('   - Elemento encontrado!');
+        console.log('   - Valor atual:', elemMesAnoAtual.textContent);
+        console.log('   - innerHTML atual:', elemMesAnoAtual.innerHTML);
+        elemMesAnoAtual.textContent = mesAno;
+        console.log('   - Novo valor definido:', mesAno);
+        console.log('   - Valor após atualização:', elemMesAnoAtual.textContent);
+    } else {
+        console.log('   - ❌ Elemento mesAnoAtual NÃO encontrado');
+    }
+    
+    console.log('=== FIM DA VERIFICAÇÃO DETALHADA ===');
+}
+
+// Executar imediatamente
+console.log('⚡ Executando testarCards imediatamente...');
+testarCards();
+
+// E também após um delay
+console.log('⏰ Agendando execução após 2 segundos...');
+setTimeout(function() {
+    console.log('⏰ Executando testarCards após delay...');
+    testarCards();
+}, 2000);
 function calcularHoras() {
     // Pegando os valores dos inputs
     const startTime = document.getElementById('startTime').value;
@@ -287,6 +396,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('custoDia').textContent = 'R$ 0,00';
         });
     }
+
+
 
     // Gráfico de linha mensal (já existente)
     const monthlyChartCanvas = document.getElementById('monthlyChart');
@@ -766,4 +877,56 @@ document.addEventListener('DOMContentLoaded', function () {
             chartJs: typeof Chart !== 'undefined'
         });
     }
+});
+
+// ===== CONTROLE DE TEMA ESCURO =====
+
+// Função para alternar entre temas
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    setTheme(newTheme);
+}
+
+// Função para definir o tema
+function setTheme(theme) {
+    // Salvar preferência no localStorage
+    localStorage.setItem('theme', theme);
+    
+    // Aplicar o tema no documento
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+    
+    // Atualizar o botão de toggle
+    updateThemeToggleButton(theme);
+    
+    console.log('🌙 Tema alterado para:', theme);
+}
+
+// Função para atualizar o botão de toggle
+function updateThemeToggleButton(theme) {
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+    
+    if (themeIcon && themeText) {
+        if (theme === 'dark') {
+            themeIcon.className = 'fas fa-sun me-2';
+            themeText.textContent = 'Modo Claro';
+        } else {
+            themeIcon.className = 'fas fa-moon me-2';
+            themeText.textContent = 'Modo Escuro';
+        }
+    }
+}
+
+// Inicializar tema ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    
+    console.log('🎨 Tema inicializado:', savedTheme);
 });
